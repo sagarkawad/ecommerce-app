@@ -1,7 +1,9 @@
 from rest_framework.decorators import api_view
-from .serializers import SignupSerializer
+from .serializers import SignupSerializer, SigninSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
 
 # Create your views here.
@@ -29,6 +31,47 @@ def signup(request):
         serializer.errors,
         status=status.HTTP_400_BAD_REQUEST
     )
+
+@api_view(["POST"])
+def signin(request):
+    serializer = SigninSerializer(data=request.data)
+
+    if serializer.is_valid():
+        email = serializer.validated_data["email"]
+        password = serializer.validated_data["password"]
+
+   
+        user = User.objects.filter(email__iexact=email).first()
+
+        if user is None:
+            return Response(
+                {
+                    "message": "User not found"
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
+        authenticated_user = authenticate(request, username=user.username, password=password)
+
+        if authenticated_user is None:
+            return Response({
+                "message": "Invalid Credentials"
+            },
+            status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        return Response({
+            "message": "Sign in successful"
+        }, 
+        status=status.HTTP_200_OK
+        )
+    else:
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+            
+
+        
     
     
 # def signin(request):

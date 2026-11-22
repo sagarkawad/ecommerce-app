@@ -24,3 +24,18 @@ class SignupSerializer(serializers.ModelSerializer):
         return User.objects.create_user(
             **validated_data
         )
+
+    def validate_email(self, value):
+        if User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError(
+                "Email already registered"
+            )
+        return value.strip().lower()
+
+class SigninSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+
+        
+    
