@@ -20,3 +20,27 @@ class AddToCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
         fields = ["product_id", "quantity"]
+
+class RemoveFromCartSerializer(serializers.ModelSerializer):
+
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset = Product.objects.all(),
+        source="product"
+    )
+
+    class Meta: 
+        model = CartItem
+        fields = ["product_id"]
+
+class AddOrSubstractFromCartSerializer(serializers.ModelSerializer):
+
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset = Product.objects.all(),
+        source = "product"
+    )
+
+    type = serializers.ChoiceField(choices=["add", "substract"])
+
+    class Meta:
+        model = CartItem
+        fields = ["product_id", "type"]
