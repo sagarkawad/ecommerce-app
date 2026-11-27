@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
 
 
 # Create your views here.
@@ -59,8 +62,15 @@ def signin(request):
             status=status.HTTP_401_UNAUTHORIZED
             )
 
+        refresh = RefreshToken.for_user(authenticated_user)
+
+        access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+
         return Response({
-            "message": "Sign in successful"
+            "message": "Sign in successful",
+            "access_token": access_token,
+           "refresh_token": refresh_token 
         }, 
         status=status.HTTP_200_OK
         )
@@ -71,6 +81,17 @@ def signin(request):
         )
             
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def profile(request):
+    user = request.user
+
+    return Response({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email
+    })
+    
         
     
     

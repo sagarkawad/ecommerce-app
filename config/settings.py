@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "polls.apps.PollsConfig",
     "products.apps.ProductsConfig",
     "users.apps.UsersConfig",
+    "carts.apps.CartsConfig",
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist"
 ]
@@ -52,8 +53,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
 
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True
